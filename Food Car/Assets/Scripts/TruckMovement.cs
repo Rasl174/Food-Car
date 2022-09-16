@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Truck : MonoBehaviour
+public class TruckMovement : MonoBehaviour
 {
     [SerializeField] private Transform _forwardPoint;
     [SerializeField] private Transform _leftPoint;

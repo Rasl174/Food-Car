@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UserInput : MonoBehaviour
 {
-    [SerializeField] private Truck _truck;
+    [SerializeField] private TruckMovement _truck;
 
     private void Update()
     {
