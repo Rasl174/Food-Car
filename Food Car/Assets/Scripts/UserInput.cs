@@ -9,11 +9,15 @@ public class UserInput : MonoBehaviour
 
     private void Update()
     {
-        _buttons.Show();
         if (Input.GetKey(KeyCode.W))
         {
             _buttons.Hide();
             _truck.Move();
+        }
+        else if (Input.GetKeyUp(KeyCode.W))
+        {
+            _buttons.Show();
+            _truck.Stop();
         }
         else if (Input.GetKeyDown(KeyCode.A) && _truck.IsRightWay)
         {

@@ -15,9 +15,11 @@ public class TruckMovement : MonoBehaviour
 
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
+    private bool _isMove = false;
 
     public bool IsLeftWay => _isLeftWay;
     public bool IsRightWay => _isRightWay;
+    public bool IsMove => _isMove;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -56,9 +58,21 @@ public class TruckMovement : MonoBehaviour
         }
     }
 
+    private IEnumerator StopTimer()
+    {
+        yield return new WaitForSeconds(1f);
+        _isMove = false;
+    }
+
     public void Move()
     {
         transform.DOMove(_forwardPoint.position, _forvardMoveTime);
+        _isMove = true;
+    }
+
+    public void Stop()
+    {
+        StartCoroutine(StopTimer());
     }
 
     public void MoveLeft()
