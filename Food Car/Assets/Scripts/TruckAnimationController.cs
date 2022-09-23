@@ -20,4 +20,14 @@ public class TruckAnimationController : MonoBehaviour
     {
         _animator.Play("Truck Stop");
     }
+
+    public void StartAnimationTurnLeft()
+    {
+        _animator.Play("Turn Left");
+    }
+
+    public void StartAnimationTurnRight()
+    {
+        _animator.Play("Turn Right");
+    }
 }

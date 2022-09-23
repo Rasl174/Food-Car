@@ -13,6 +13,7 @@ public class TruckMovement : MonoBehaviour
     [SerializeField] private float _turnTime;
     [SerializeField] private float _turnTimeTuning;
     [SerializeField] private TruckAnimationController _animationController;
+    [SerializeField] private ArrowsController _arrowsController;
 
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
@@ -59,6 +60,14 @@ public class TruckMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.TryGetComponent<Turn>(out Turn turn) || other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft) || other.TryGetComponent<TurnRight>(out TurnRight turnRight))
+        {
+            _arrowsController.ChangeCrosswalkCount();
+        }
+    }
+
     private IEnumerator StopTimer()
     {
         yield return new WaitForSeconds(1f);
@@ -83,6 +92,7 @@ public class TruckMovement : MonoBehaviour
         _isLeftWay = true;
         _isRightWay = false;
         transform.DOMove(_leftPoint.position, _offsetTime);
+        _animationController.StartAnimationTurnLeft();
     }
 
     public void MoveRight()
@@ -90,5 +100,6 @@ public class TruckMovement : MonoBehaviour
         _isLeftWay = false;
         _isRightWay = true;
         transform.DOMove(_rightPoint.position, _offsetTime);
+        _animationController.StartAnimationTurnRight();
     }
 }
