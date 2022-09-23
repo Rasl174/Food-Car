@@ -12,6 +12,7 @@ public class TruckMovement : MonoBehaviour
     [SerializeField] private float _offsetTime;
     [SerializeField] private float _turnTime;
     [SerializeField] private float _turnTimeTuning;
+    [SerializeField] private TruckAnimationController _animationController;
 
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
@@ -66,12 +67,14 @@ public class TruckMovement : MonoBehaviour
 
     public void Move()
     {
+        _animationController.StartDriveAnimation();
         transform.DOMove(_forwardPoint.position, _forvardMoveTime);
         _isMove = true;
     }
 
     public void Stop()
     {
+        _animationController.StartStopAnimation();
         StartCoroutine(StopTimer());
     }
 

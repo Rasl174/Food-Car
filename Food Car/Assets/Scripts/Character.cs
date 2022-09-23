@@ -5,8 +5,7 @@ using DG.Tweening;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _smile;
-
+    private ParticleSystem _smile;
     private RingColorChanger _ringColorChanger;
     private FoodSpawner _foodSpawner;
     private FoodMovement _foodMovement;
@@ -20,12 +19,14 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
+        _smile = GetComponentInChildren<ParticleSystem>();
         _text = GetComponentInChildren<TextObject>();
         _ringColorChanger = FindObjectOfType<RingColorChanger>();
         _foodSpawner = FindObjectOfType<FoodSpawner>();
         _wayPointMovement = GetComponent<WayPointMovement>();
         _indicator = GetComponent<Waypoint_Indicator>();
         _animator = GetComponent<Animator>();
+        _text.gameObject.SetActive(false);
         _smile.Stop();
     }
 
@@ -35,6 +36,8 @@ public class Character : MonoBehaviour
         _text.gameObject.transform.LookAt(Camera.main.transform);
         if(_foodMovement.transform.position == transform.position)
         {
+            _smile.Play();
+            _text.gameObject.SetActive(true);
             _isHungry = false;
             _indicator.enabled = false;
             _foodSpawner.Remove();
@@ -44,16 +47,9 @@ public class Character : MonoBehaviour
 
     private IEnumerator WaypointEnabled()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.5f);
         _wayPointMovement.enabled = true;
         _ringColorChanger.SetYellowColor();
-    }
-
-    public void Buing()
-    {
-        _indicator.enabled = false;
-        //_moneyTexture.SetActive(true);
-        //_smile.Play();
     }
 
     public void PlayRunAnimation()
