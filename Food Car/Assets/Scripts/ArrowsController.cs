@@ -11,7 +11,7 @@ public class ArrowsController : MonoBehaviour
     [SerializeField] private float _colorTimeChenger;
     [SerializeField] private Material _material;
 
-    private int _crossWalksCount;
+    private int _crossWalkIndex;
     private Color _startColor;
     private Color _endColor;
 
@@ -31,8 +31,8 @@ public class ArrowsController : MonoBehaviour
 
     private void Update()
     {
-        Renderer leftArrowRender = _leftArrows[_crossWalksCount].GetComponent<Renderer>();
-        Renderer rightArrowRender = _rightArrows[_crossWalksCount].GetComponent<Renderer>();
+        Renderer leftArrowRender = _leftArrows[_crossWalkIndex].GetComponent<Renderer>();
+        Renderer rightArrowRender = _rightArrows[_crossWalkIndex].GetComponent<Renderer>();
 
         if (_truckMovement.IsLeftWay)
         {
@@ -46,10 +46,12 @@ public class ArrowsController : MonoBehaviour
         }
     }
 
-    public void ChangeCrosswalkCount()
+    public void SetCrosswalkIndex(int currentIndex)
     {
-        _leftArrows[_crossWalksCount].SetActive(false);
-        _rightArrows[_crossWalksCount].SetActive(false);
-        _crossWalksCount++;
+        _leftArrows[_crossWalkIndex].SetActive(false);
+        _rightArrows[_crossWalkIndex].SetActive(false);
+        _crossWalkIndex = currentIndex;
+        _leftArrows[_crossWalkIndex].SetActive(true);
+        _rightArrows[_crossWalkIndex].SetActive(true);
     }
 }

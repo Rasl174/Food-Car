@@ -62,9 +62,28 @@ public class TruckMovement : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.TryGetComponent<Turn>(out Turn turn) || other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft) || other.TryGetComponent<TurnRight>(out TurnRight turnRight))
+        if(other.TryGetComponent<Turn>(out Turn turn))
         {
-            _arrowsController.ChangeCrosswalkCount();
+            if (_isLeftWay)
+            {
+                _arrowsController.SetCrosswalkIndex(turn.CurrentLeftIndex);
+                turn.ActivateNextLeftTurn();
+            }
+            else if (_isRightWay)
+            {
+                _arrowsController.SetCrosswalkIndex(turn.CurrentRightIndex);
+                turn.ActivateNextRightTurn();
+            }
+        }
+        else if(other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft))
+        {
+            _arrowsController.SetCrosswalkIndex(turnLeft.CurrentIndex);
+            turnLeft.ActivateNextTurn();
+        }
+        else if(other.TryGetComponent<TurnRight>(out TurnRight turnRight))
+        {   
+            _arrowsController.SetCrosswalkIndex(turnRight.CurrentIndex);
+            turnRight.ActivateNextTurn();
         }
     }
 
@@ -74,11 +93,27 @@ public class TruckMovement : MonoBehaviour
         _isMove = false;
     }
 
+    private IEnumerator ChangeLineLeft()
+    {
+        yield return new WaitForSeconds(0.8f);
+        _isLeftWay = true;
+    }
+
+    private IEnumerator ChangeLineRight()
+    {
+        yield return new WaitForSeconds(0.8f);
+        _isRightWay = true;
+    }
+
+
     public void Move()
     {
-        _animationController.StartDriveAnimation();
-        transform.DOMove(_forwardPoint.position, _forvardMoveTime);
-        _isMove = true;
+        if(_isLeftWay || _isRightWay)
+        {
+            _animationController.StartDriveAnimation();
+            transform.DOMove(_forwardPoint.position, _forvardMoveTime);
+            _isMove = true;
+        }
     }
 
     public void Stop()
@@ -89,17 +124,17 @@ public class TruckMovement : MonoBehaviour
 
     public void MoveLeft()
     {
-        _isLeftWay = true;
         _isRightWay = false;
         transform.DOMove(_leftPoint.position, _offsetTime);
         _animationController.StartAnimationTurnLeft();
+        StartCoroutine(ChangeLineLeft());
     }
 
     public void MoveRight()
     {
         _isLeftWay = false;
-        _isRightWay = true;
         transform.DOMove(_rightPoint.position, _offsetTime);
         _animationController.StartAnimationTurnRight();
+        StartCoroutine(ChangeLineRight());
     }
 }
