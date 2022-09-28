@@ -12,11 +12,15 @@ public class SellFood : MonoBehaviour
 
     private FoodSpawner _foodSpawner;
     private TruckMovement _truckMovement;
+    private UserInput _userInput;
+    private MouseInput _mouseInput;
 
     private void Start()
     {
+        _userInput = FindObjectOfType<UserInput>();
         _foodSpawner = GetComponentInParent<FoodSpawner>();
         _truckMovement = GetComponentInParent<TruckMovement>();
+        _mouseInput = FindObjectOfType<MouseInput>();
     }
 
     private void OnTriggerStay(Collider other)
@@ -30,6 +34,8 @@ public class SellFood : MonoBehaviour
             {
                 character.PlayRunAnimation();
                 wayPointMovement.enabled = false;
+                _userInput.enabled = false;
+                _mouseInput.enabled = false;
                 if (_truckMovement.IsLeftWay)
                 {
                     other.gameObject.transform.LookAt(_leftSellSide);

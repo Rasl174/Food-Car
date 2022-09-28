@@ -8,11 +8,15 @@ public class FoodMovement : MonoBehaviour
 
     private Transform[] _positions;
     private int _currentPoint;
+    private UserInput _userInput;
+    private MouseInput _mouseInput;
 
     private void Awake()
     {
         enabled = false;
         _positions = new Transform[2];
+        _userInput = FindObjectOfType<UserInput>();
+        _mouseInput = FindObjectOfType<MouseInput>();
     }
 
     private void Update()
@@ -24,6 +28,11 @@ public class FoodMovement : MonoBehaviour
         if (transform.position == target.position)
         {
             _currentPoint++;
+        }
+        if(transform.position == _positions[1].position)
+        {
+            _userInput.enabled = true;
+            _mouseInput.enabled = true;
         }
     }
 

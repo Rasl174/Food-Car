@@ -10,53 +10,110 @@ public class TruckMovement : MonoBehaviour
     [SerializeField] private Transform _rightPoint;
     [SerializeField] private float _forvardMoveTime;
     [SerializeField] private float _offsetTime;
-    [SerializeField] private float _turnTime;
-    [SerializeField] private float _turnTimeTuning;
     [SerializeField] private TruckAnimationController _animationController;
     [SerializeField] private ArrowsController _arrowsController;
+    [SerializeField] private float _turnSpeed;
+    [SerializeField] private float _turnSpeedTuning;
 
+    private Vector3 _targetRotation;
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
     private bool _isMove = false;
+    private bool _isTurnLeft = false;
+    private bool _isTurnRight = false;
+    private bool _isTurn = false;
 
     public bool IsLeftWay => _isLeftWay;
     public bool IsRightWay => _isRightWay;
     public bool IsMove => _isMove;
 
+    private void Update()
+    {
+        if (_isTurnLeft)
+        {
+            if (transform.eulerAngles.y > 340)
+            {
+                _targetRotation.y = 270;
+            }
+            if (_isLeftWay && _isMove)
+            {
+                Turn(_turnSpeed + _turnSpeedTuning);
+            }
+            else if (_isRightWay && _isMove)
+            {
+                Turn(_turnSpeed);
+            }
+        }
+        else if (_isTurnRight)
+        {
+            if(transform.eulerAngles.y < 20 && _targetRotation.y == 360)
+            {
+                _targetRotation.y = 0;
+            }
+            if (_isLeftWay && _isMove)
+            {
+                Turn(_turnSpeed);
+            }
+            else if (_isRightWay && _isMove)
+            {
+                Turn(_turnSpeed + _turnSpeedTuning);
+            }
+        }
+        else if (_isTurn)
+        {
+            if(_isLeftWay)
+            {
+                if (transform.eulerAngles.y > 340)
+                {
+                    _targetRotation.y = 270;
+                }
+                if (_isMove)
+                {
+                    Turn(_turnSpeed + _turnSpeedTuning);
+                }
+            }
+            if (_isRightWay)
+            {
+                if (transform.eulerAngles.y < 20 && _targetRotation.y == 360)
+                {
+                    _targetRotation.y = 0;
+                }
+                if (_isMove)
+                {
+                    Turn(_turnSpeed + _turnSpeedTuning);
+                }
+            }
+        }
+    }
+
+    private void Turn(float speed)
+    {
+        transform.eulerAngles = Vector3.MoveTowards(transform.eulerAngles, _targetRotation, speed * Time.deltaTime);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<Turn>(out Turn turn))
+        if (other.TryGetComponent<Turn>(out Turn turn))
         {
+            _isTurn = turn;
             if (_isLeftWay)
             {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, -90, 0), _turnTime);
+                _targetRotation.y = transform.eulerAngles.y - 90;
             }
             else if (_isRightWay)
             {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, 90, 0), _turnTime);
+                _targetRotation.y = transform.eulerAngles.y + 90;
             }
         }
-        if(other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft))
+        if (other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft))
         {
-            if (_isLeftWay)
-            {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, -90, 0), _turnTime);
-            }
-            else
-            {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, -90, 0), _turnTime + _turnTimeTuning);
-            }
+            _isTurnLeft = true;
+            _targetRotation.y = transform.eulerAngles.y - 90;
         }
-        if(other.TryGetComponent<TurnRight>(out TurnRight turnRight))
+        if (other.TryGetComponent<TurnRight>(out TurnRight turnRight))
         {
-            if (_isRightWay)
-            {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, 90, 0), _turnTime);
-            }
-            else
-            {
-                transform.DORotate(transform.eulerAngles + new Vector3(0, 90, 0), _turnTime + _turnTimeTuning);
-            }
+            _isTurnRight = true;
+            _targetRotation.y = transform.eulerAngles.y + 90;
         }
     }
 
@@ -64,6 +121,7 @@ public class TruckMovement : MonoBehaviour
     {
         if(other.TryGetComponent<Turn>(out Turn turn))
         {
+            _isTurn = false;
             if (_isLeftWay)
             {
                 _arrowsController.SetCrosswalkIndex(turn.CurrentLeftIndex);
@@ -79,18 +137,14 @@ public class TruckMovement : MonoBehaviour
         {
             _arrowsController.SetCrosswalkIndex(turnLeft.CurrentIndex);
             turnLeft.ActivateNextTurn();
+            _isTurnLeft = false;
         }
         else if(other.TryGetComponent<TurnRight>(out TurnRight turnRight))
         {   
             _arrowsController.SetCrosswalkIndex(turnRight.CurrentIndex);
             turnRight.ActivateNextTurn();
+            _isTurnRight = false;
         }
-    }
-
-    private IEnumerator StopTimer()
-    {
-        yield return new WaitForSeconds(1f);
-        _isMove = false;
     }
 
     private IEnumerator ChangeLineLeft()
@@ -119,7 +173,7 @@ public class TruckMovement : MonoBehaviour
     public void Stop()
     {
         _animationController.StartStopAnimation();
-        StartCoroutine(StopTimer());
+        _isMove = false;
     }
 
     public void MoveLeft()
