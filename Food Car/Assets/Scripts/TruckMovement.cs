@@ -15,6 +15,7 @@ public class TruckMovement : MonoBehaviour
     [SerializeField] private float _turnSpeed;
     [SerializeField] private float _turnSpeedTuning;
 
+    private ButtonsEnabled _buttonsEnabled;
     private Vector3 _targetRotation;
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
@@ -22,10 +23,19 @@ public class TruckMovement : MonoBehaviour
     private bool _isTurnLeft = false;
     private bool _isTurnRight = false;
     private bool _isTurn = false;
+    private bool _onTurn = false;
+    private bool _isWayChanged = false;
 
     public bool IsLeftWay => _isLeftWay;
     public bool IsRightWay => _isRightWay;
     public bool IsMove => _isMove;
+    public bool OnTurn => _onTurn;
+    public bool IsWayChanged => _isWayChanged;
+
+    private void Start()
+    {
+        _buttonsEnabled = FindObjectOfType<ButtonsEnabled>();
+    }
 
     private void Update()
     {
@@ -93,9 +103,13 @@ public class TruckMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.TryGetComponent<BeforeTurn>(out BeforeTurn beforeTurn))
+        {
+            _onTurn = true;
+        }
         if (other.TryGetComponent<Turn>(out Turn turn))
         {
-            _isTurn = turn;
+            _isTurn = true;
             if (_isLeftWay)
             {
                 _targetRotation.y = transform.eulerAngles.y - 90;
@@ -121,6 +135,7 @@ public class TruckMovement : MonoBehaviour
     {
         if(other.TryGetComponent<Turn>(out Turn turn))
         {
+            _onTurn = false;
             _isTurn = false;
             if (_isLeftWay)
             {
@@ -135,12 +150,14 @@ public class TruckMovement : MonoBehaviour
         }
         else if(other.TryGetComponent<TurnLeft>(out TurnLeft turnLeft))
         {
+            _onTurn = false;
             _arrowsController.SetCrosswalkIndex(turnLeft.CurrentIndex);
             turnLeft.ActivateNextTurn();
             _isTurnLeft = false;
         }
         else if(other.TryGetComponent<TurnRight>(out TurnRight turnRight))
-        {   
+        {
+            _onTurn = false;
             _arrowsController.SetCrosswalkIndex(turnRight.CurrentIndex);
             turnRight.ActivateNextTurn();
             _isTurnRight = false;
@@ -149,14 +166,18 @@ public class TruckMovement : MonoBehaviour
 
     private IEnumerator ChangeLineLeft()
     {
+        _isWayChanged = true;
         yield return new WaitForSeconds(0.8f);
         _isLeftWay = true;
+        _isWayChanged = false;
     }
 
     private IEnumerator ChangeLineRight()
     {
+        _isWayChanged = true;
         yield return new WaitForSeconds(0.8f);
         _isRightWay = true;
+        _isWayChanged = false;
     }
 
 
@@ -164,14 +185,16 @@ public class TruckMovement : MonoBehaviour
     {
         if(_isLeftWay || _isRightWay)
         {
+            _buttonsEnabled.DeactivateButton();
             _animationController.StartDriveAnimation();
-            transform.DOMove(_forwardPoint.position, _forvardMoveTime);
+            transform.position = Vector3.MoveTowards(transform.position, _forwardPoint.position, _forvardMoveTime * Time.deltaTime);
             _isMove = true;
         }
     }
 
     public void Stop()
     {
+        _buttonsEnabled.ActivateButton();
         _animationController.StartStopAnimation();
         _isMove = false;
     }

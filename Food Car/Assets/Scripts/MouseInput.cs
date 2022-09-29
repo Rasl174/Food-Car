@@ -7,12 +7,14 @@ public class MouseInput : MonoBehaviour
 {
     [SerializeField] private TruckMovement _truckMovement;
     [SerializeField] private ButtonsMovement _foodButtons;
+    [SerializeField] private FoodSpawner _foodSpawner;
+    [SerializeField] private Image[] _images;
 
     private bool _pressedDrive = false;
 
     private void Update()
     {
-        if (_pressedDrive)
+        if (_pressedDrive && _foodSpawner.Spawned == false)
         {
             _truckMovement.Move();
             _foodButtons.Hide();
@@ -33,7 +35,7 @@ public class MouseInput : MonoBehaviour
 
     public void OnTurnLeftDown()
     {
-        if (_truckMovement.IsRightWay)
+        if (_truckMovement.IsRightWay && _truckMovement.OnTurn == false && _foodSpawner.Spawned == false)
         {
             _truckMovement.MoveLeft();
         }
@@ -41,9 +43,25 @@ public class MouseInput : MonoBehaviour
     
     public void OnTurnRightDown()
     {
-        if (_truckMovement.IsLeftWay)
+        if (_truckMovement.IsLeftWay && _truckMovement.OnTurn == false && _foodSpawner.Spawned == false)
         {
             _truckMovement.MoveRight();
+        }
+    }
+
+    public void ActivateImages()
+    {
+        foreach (var image in _images)
+        {
+            image.enabled = true;
+        }
+    }
+
+    public void DeactivateImages()
+    {
+        foreach (var image in _images)
+        {
+            image.enabled = false;
         }
     }
 }

@@ -6,10 +6,11 @@ public class UserInput : MonoBehaviour
 {
     [SerializeField] private TruckMovement _truck;
     [SerializeField] private ButtonsMovement _buttons;
+    [SerializeField] private FoodSpawner _foodSpawner;
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) && _foodSpawner.Spawned == false)
         {
             _buttons.Hide();
             _truck.Move();
@@ -19,11 +20,11 @@ public class UserInput : MonoBehaviour
             _buttons.Show();
             _truck.Stop();
         }
-        else if (Input.GetKeyDown(KeyCode.A) && _truck.IsRightWay)
+        else if (Input.GetKeyDown(KeyCode.A) && _truck.IsRightWay && _truck.OnTurn == false && _foodSpawner.Spawned == false)
         {
             _truck.MoveLeft();
         }
-        else if (Input.GetKeyDown(KeyCode.D) && _truck.IsLeftWay)
+        else if (Input.GetKeyDown(KeyCode.D) && _truck.IsLeftWay && _truck.OnTurn == false && _foodSpawner.Spawned == false)
         {
             _truck.MoveRight();
         }

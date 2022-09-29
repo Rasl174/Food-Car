@@ -32,7 +32,7 @@ public class FoodMovement : MonoBehaviour
         if(transform.position == _positions[1].position)
         {
             _userInput.enabled = true;
-            _mouseInput.enabled = true;
+            _mouseInput.ActivateImages();
         }
     }
 

@@ -9,6 +9,7 @@ public class SellFood : MonoBehaviour
     [SerializeField] private Transform _leftSellSide;
     [SerializeField] private Transform _rightSellSide;
     [SerializeField] private Transform _jumpPosition;
+    [SerializeField] private ButtonsEnabled _button;
 
     private FoodSpawner _foodSpawner;
     private TruckMovement _truckMovement;
@@ -29,13 +30,14 @@ public class SellFood : MonoBehaviour
         other.TryGetComponent<Character>(out Character character);
         if (other.gameObject.tag == "Hotdog" && _foodSpawner.Food.Count > 0 && character.IsHungry)
         {
+            _button.DeactivateButton();
             _ringColorChanger.ChangeForGreen();
             if (_truckMovement.IsMove == false)
             {
                 character.PlayRunAnimation();
                 wayPointMovement.enabled = false;
                 _userInput.enabled = false;
-                _mouseInput.enabled = false;
+                _mouseInput.DeactivateImages();
                 if (_truckMovement.IsLeftWay)
                 {
                     other.gameObject.transform.LookAt(_leftSellSide);

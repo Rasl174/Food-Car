@@ -13,20 +13,25 @@ public class FoodSpawner : MonoBehaviour
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private Transform _finishPosition;
     [SerializeField] private float _moveTime;
-    [SerializeField] private Transform _foodSellPoint;
-    [SerializeField] private float _jumpSpeed;
 
+    private TruckMovement _truckMovement;
     private List<GameObject> _food = new List<GameObject>();
+    private bool _spawned = false;
+    private int _maxFoodCount = 6;
+
+    public bool Spawned => _spawned;
 
     public List<GameObject> Food => _food;
 
-    private IEnumerator FoodMoveToTarget(GameObject food, Transform character)
+    private void Start()
     {
-        while(food.transform.position == character.position)
-        {
-            food.transform.position = Vector3.MoveTowards(food.transform.position, character.position, _jumpSpeed * Time.deltaTime);
-        }
-        yield return null;
+        _truckMovement = FindObjectOfType<TruckMovement>();
+    }
+
+    private IEnumerator SpawnedTimer()
+    {
+        yield return new WaitForSeconds(_moveTime + 0.1f);
+        _spawned = false;
     }
 
     public void Spawn()
@@ -34,14 +39,16 @@ public class FoodSpawner : MonoBehaviour
         int money = int.Parse(_money.text);
         int cost = int.Parse(_cost.text);
 
-        if (money >= cost)
+        if (money >= cost && _spawned == false && _food.Count < _maxFoodCount && _truckMovement.IsWayChanged == false)
         {
+            _spawned = true;
             money -= cost;
             _money.text = money.ToString();
             var hotDog = Instantiate(_hotDog, _spawnPosition);
             hotDog.transform.DOMove(_finishPosition.position, _moveTime);
             _finishPosition.position += _finishTuningPosition;
             _food.Add(hotDog);
+            StartCoroutine(SpawnedTimer());
         }
     }
 

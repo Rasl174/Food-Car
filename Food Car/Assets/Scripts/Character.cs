@@ -14,11 +14,13 @@ public class Character : MonoBehaviour
     private Waypoint_Indicator _indicator;
     private bool _isHungry = true;
     private TextObject _text;
+    private ButtonsEnabled _buttonEnabled;
 
     public bool IsHungry => _isHungry;
 
     private void Start()
     {
+        _buttonEnabled = FindObjectOfType<ButtonsEnabled>();
         _smile = GetComponentInChildren<ParticleSystem>();
         _text = GetComponentInChildren<TextObject>();
         _ringColorChanger = FindObjectOfType<RingColorChanger>();
@@ -32,22 +34,26 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        _foodMovement = FindObjectOfType<FoodMovement>();
         _text.gameObject.transform.LookAt(Camera.main.transform);
-        if(_foodMovement.transform.position == transform.position)
+        if(_foodSpawner.Food.Count > 0)
         {
-            _smile.Play();
-            _text.gameObject.SetActive(true);
-            _isHungry = false;
-            _indicator.enabled = false;
-            _foodSpawner.Remove();
-            StartCoroutine(WaypointEnabled());
+            _foodMovement = FindObjectOfType<FoodMovement>();
+            if(_foodMovement.transform.position == transform.position)
+            {
+                _smile.Play();
+                _text.gameObject.SetActive(true);
+                _isHungry = false;
+                _indicator.enabled = false;
+                _foodSpawner.Remove();
+                StartCoroutine(WaypointEnabled());
+            }
         }
     }
 
     private IEnumerator WaypointEnabled()
     {
         yield return new WaitForSeconds(0.5f);
+        _buttonEnabled.ActivateButton();
         _wayPointMovement.enabled = true;
         _ringColorChanger.SetYellowColor();
     }
