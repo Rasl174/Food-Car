@@ -28,9 +28,9 @@ public class SellFood : MonoBehaviour
     {
         other.TryGetComponent<WayPointMovement>(out WayPointMovement wayPointMovement);
         other.TryGetComponent<Character>(out Character character);
-        if (other.gameObject.tag == "Hotdog" && _foodSpawner.Food.Count > 0 && character.IsHungry)
+        if (_foodSpawner.Food.Count > 0 &&  _foodSpawner.CheckLastFood(other.gameObject) && character.IsHungry)
         {
-            _button.DeactivateButton();
+            _button.DeactivateButtons();
             _ringColorChanger.ChangeForGreen();
             if (_truckMovement.IsMove == false)
             {

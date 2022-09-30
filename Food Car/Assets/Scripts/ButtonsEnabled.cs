@@ -5,24 +5,30 @@ using UnityEngine.UI;
 
 public class ButtonsEnabled : MonoBehaviour
 {
-    [SerializeField] private Button _buttonHotDog;
+    [SerializeField] private Button[] _foodButtons;
     [SerializeField] private TruckMovement _truckMovement;
 
     private void Update()
     {
         if (_truckMovement.IsMove)
         {
-            _buttonHotDog.enabled = false;
+            DeactivateButtons();
         }
     }
 
-    public void ActivateButton()
+    public void ActivateButtons()
     {
-        _buttonHotDog.enabled = true;
+        foreach (var button in _foodButtons)
+        {
+            button.enabled = true;
+        }
     }
 
-    public void DeactivateButton()
+    public void DeactivateButtons()
     {
-        _buttonHotDog.enabled = false;
+        foreach (var button in _foodButtons)
+        {
+            button.enabled = false;
+        }
     }
 }

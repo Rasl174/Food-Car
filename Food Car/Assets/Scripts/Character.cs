@@ -53,7 +53,7 @@ public class Character : MonoBehaviour
     private IEnumerator WaypointEnabled()
     {
         yield return new WaitForSeconds(0.5f);
-        _buttonEnabled.ActivateButton();
+        _buttonEnabled.ActivateButtons();
         _wayPointMovement.enabled = true;
         _ringColorChanger.SetYellowColor();
     }

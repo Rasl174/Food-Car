@@ -8,6 +8,8 @@ TagManager:
   - Food
   - Hotdog
   - Move
+  - Hamburger
+  - Pizza
   layers:
   - Default
   - TransparentFX

@@ -185,7 +185,7 @@ public class TruckMovement : MonoBehaviour
     {
         if(_isLeftWay || _isRightWay)
         {
-            _buttonsEnabled.DeactivateButton();
+            _buttonsEnabled.DeactivateButtons();
             _animationController.StartDriveAnimation();
             transform.position = Vector3.MoveTowards(transform.position, _forwardPoint.position, _forvardMoveTime * Time.deltaTime);
             _isMove = true;
@@ -194,7 +194,7 @@ public class TruckMovement : MonoBehaviour
 
     public void Stop()
     {
-        _buttonsEnabled.ActivateButton();
+        _buttonsEnabled.ActivateButtons();
         _animationController.StartStopAnimation();
         _isMove = false;
     }
