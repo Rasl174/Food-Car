@@ -17,6 +17,7 @@ public class TruckMovement : MonoBehaviour
 
     private ButtonsEnabled _buttonsEnabled;
     private Vector3 _targetRotation;
+    private float _changeLineTimer = 0.8f;
     private bool _isLeftWay = false;
     private bool _isRightWay = true;
     private bool _isMove = false;
@@ -167,7 +168,7 @@ public class TruckMovement : MonoBehaviour
     private IEnumerator ChangeLineLeft()
     {
         _isWayChanged = true;
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(_changeLineTimer);
         _isLeftWay = true;
         _isWayChanged = false;
     }
@@ -175,7 +176,7 @@ public class TruckMovement : MonoBehaviour
     private IEnumerator ChangeLineRight()
     {
         _isWayChanged = true;
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(_changeLineTimer);
         _isRightWay = true;
         _isWayChanged = false;
     }

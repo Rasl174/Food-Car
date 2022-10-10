@@ -15,8 +15,6 @@ public class FoodMovement : MonoBehaviour
     {
         enabled = false;
         _positions = new Transform[2];
-        _userInput = FindObjectOfType<UserInput>();
-        _mouseInput = FindObjectOfType<MouseInput>();
     }
 
     private void Update()
@@ -41,5 +39,7 @@ public class FoodMovement : MonoBehaviour
         enabled = true;
         _positions[0] = jumpPosition;
         _positions[1] = character;
+        _userInput = FindObjectOfType<UserInput>();
+        _mouseInput = FindObjectOfType<MouseInput>();
     }
 }

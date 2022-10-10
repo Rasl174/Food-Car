@@ -13,7 +13,7 @@ public class ButtonsMovement : MonoBehaviour
 
     private void Start()
     {
-        _position = gameObject.GetComponent<RectTransform>();
+        _position = GetComponent<RectTransform>();
     }
 
     public void Hide()

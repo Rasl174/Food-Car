@@ -5,26 +5,24 @@ using DG.Tweening;
 
 public class Character : MonoBehaviour
 {
+    [SerializeField] private ButtonsEnabled _buttonEnabled;
+    [SerializeField] private RingColorChanger _ringColorChanger;
+    [SerializeField] private FoodSpawner _foodSpawner;
+
     private ParticleSystem _smile;
-    private RingColorChanger _ringColorChanger;
-    private FoodSpawner _foodSpawner;
     private FoodMovement _foodMovement;
     private WayPointMovement _wayPointMovement;
     private Animator _animator;
     private Waypoint_Indicator _indicator;
     private bool _isHungry = true;
     private TextObject _text;
-    private ButtonsEnabled _buttonEnabled;
 
     public bool IsHungry => _isHungry;
 
     private void Start()
     {
-        _buttonEnabled = FindObjectOfType<ButtonsEnabled>();
         _smile = GetComponentInChildren<ParticleSystem>();
         _text = GetComponentInChildren<TextObject>();
-        _ringColorChanger = FindObjectOfType<RingColorChanger>();
-        _foodSpawner = FindObjectOfType<FoodSpawner>();
         _wayPointMovement = GetComponent<WayPointMovement>();
         _indicator = GetComponent<Waypoint_Indicator>();
         _animator = GetComponent<Animator>();

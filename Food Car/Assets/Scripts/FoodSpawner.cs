@@ -24,6 +24,12 @@ public class FoodSpawner : MonoBehaviour
     private List<GameObject> _food = new List<GameObject>();
     private bool _spawned = false;
     private int _maxFoodCount = 6;
+    private int _hotDogCost = 20;
+    private int _hamburgerCost = 200;
+    private int _pizzaCost = 700;
+    private const string _hotDogName = "Hotdog";
+    private const string _hamburgerName = "Hamburger";
+    private const string _pizzaName = "Pizza";
 
     public bool Spawned => _spawned;
 
@@ -31,7 +37,7 @@ public class FoodSpawner : MonoBehaviour
 
     private void Start()
     {
-        _truckMovement = FindObjectOfType<TruckMovement>();
+        _truckMovement = GetComponent<TruckMovement>();
     }
 
     private IEnumerator SpawnedTimer()
@@ -99,17 +105,17 @@ public class FoodSpawner : MonoBehaviour
     {
         int money = int.Parse(_money.text);
         var currentFood = _food[_food.Count - 1];
-        if(currentFood.tag == "Hotdog")
+        if(currentFood.tag == _hotDogName)
         {
-            money += 20;
+            money += _hotDogCost;
         }
-        else if(currentFood.tag == "Hamburger")
+        else if(currentFood.tag == _hamburgerName)
         {
-            money += 200;
+            money += _hamburgerCost;
         }
-        else if(currentFood.tag == "Pizza")
+        else if(currentFood.tag == _pizzaName)
         {
-            money += 700;
+            money += _pizzaCost;
         }
         _money.text = money.ToString();
         _finishPosition.position -= _finishTuningPosition;

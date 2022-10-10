@@ -5,6 +5,10 @@ using UnityEngine;
 public class TruckAnimationController : MonoBehaviour
 {
     private Animator _animator;
+    private const string _drive = "Truck Drive";
+    private const string _stop = "Truck Stop";
+    private const string _turnLeft = "Turn Left";
+    private const string _turnRight = "Turn Right";
 
     private void Start()
     {
@@ -13,21 +17,21 @@ public class TruckAnimationController : MonoBehaviour
 
     public void StartDriveAnimation()
     {
-        _animator.Play("Truck Drive");
+        _animator.Play(_drive);
     }
 
     public void StartStopAnimation()
     {
-        _animator.Play("Truck Stop");
+        _animator.Play(_stop);
     }
 
     public void StartAnimationTurnLeft()
     {
-        _animator.Play("Turn Left");
+        _animator.Play(_turnLeft);
     }
 
     public void StartAnimationTurnRight()
     {
-        _animator.Play("Turn Right");
+        _animator.Play(_turnRight);
     }
 }

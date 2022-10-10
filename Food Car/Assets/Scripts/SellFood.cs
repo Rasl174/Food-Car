@@ -10,18 +10,17 @@ public class SellFood : MonoBehaviour
     [SerializeField] private Transform _rightSellSide;
     [SerializeField] private Transform _jumpPosition;
     [SerializeField] private ButtonsEnabled _button;
+    [SerializeField] private UserInput _userInput;
+    [SerializeField] private MouseInput _mouseInput;
 
     private FoodSpawner _foodSpawner;
     private TruckMovement _truckMovement;
-    private UserInput _userInput;
-    private MouseInput _mouseInput;
+    private float _characterRunSpeed = 5;
 
     private void Start()
     {
-        _userInput = FindObjectOfType<UserInput>();
         _foodSpawner = GetComponentInParent<FoodSpawner>();
         _truckMovement = GetComponentInParent<TruckMovement>();
-        _mouseInput = FindObjectOfType<MouseInput>();
     }
 
     private void OnTriggerStay(Collider other)
@@ -32,37 +31,21 @@ public class SellFood : MonoBehaviour
         {
             _button.DeactivateButtons();
             _ringColorChanger.ChangeForGreen();
+
             if (_truckMovement.IsMove == false)
             {
                 character.PlayRunAnimation();
                 wayPointMovement.enabled = false;
                 _userInput.enabled = false;
                 _mouseInput.DeactivateImages();
+
                 if (_truckMovement.IsLeftWay)
                 {
-                    other.gameObject.transform.LookAt(_leftSellSide);
-                    other.transform.position = Vector3.MoveTowards(other.transform.position, _leftSellSide.position, 5 * Time.deltaTime);
-                    if (other.gameObject.transform.position == _leftSellSide.position)
-                    {
-                        other.gameObject.transform.LookAt(_truckMovement.transform);
-                        character.PlayTakeAnimation();
-                        _foodSpawner.SetCurrentFood(out GameObject current, out FoodMovement foodMovement);
-                        foodMovement.SetPositions(_jumpPosition, other.transform);
-                        other.enabled = false;
-                    }
+                    SellFoodOnSide(other, _leftSellSide, character);
                 }
                 else if (_truckMovement.IsRightWay)
                 {
-                    other.gameObject.transform.LookAt(_rightSellSide);
-                    other.transform.position = Vector3.MoveTowards(other.transform.position, _rightSellSide.position, 5 * Time.deltaTime);
-                    if (other.gameObject.transform.position == _rightSellSide.position)
-                    {
-                        other.gameObject.transform.LookAt(_truckMovement.transform);
-                        character.PlayTakeAnimation();
-                        _foodSpawner.SetCurrentFood(out GameObject current, out FoodMovement foodMovement);
-                        foodMovement.SetPositions(_jumpPosition, other.transform);
-                        other.enabled = false;
-                    }
+                    SellFoodOnSide(other, _rightSellSide, character);
                 }
             }
         }
@@ -71,5 +54,20 @@ public class SellFood : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         _ringColorChanger.SetYellowColor();
+    }
+
+    private void SellFoodOnSide(Collider characterCollider, Transform sellSide, Character character)
+    {
+        characterCollider.gameObject.transform.LookAt(sellSide);
+        characterCollider.transform.position = Vector3.MoveTowards(characterCollider.transform.position, sellSide.position, _characterRunSpeed * Time.deltaTime);
+
+        if (characterCollider.gameObject.transform.position == sellSide.position)
+        {
+            characterCollider.gameObject.transform.LookAt(_truckMovement.transform);
+            character.PlayTakeAnimation();
+            _foodSpawner.SetCurrentFood(out GameObject current, out FoodMovement foodMovement);
+            foodMovement.SetPositions(_jumpPosition, characterCollider.transform);
+            characterCollider.enabled = false;
+        }
     }
 }
